@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.8.0;
+pragma solidity >=0.6.0 <0.8.0;
 
 import "./IERC20.sol";
+import "./SafeMath.sol";
 
 contract DCACOIN is IERC20 {
+    //Declare use of SafeMath library.
+    using SafeMath for uint256;
 
     uint public constant _totalSupply = 1000000;
     //Balances of the accounts.
@@ -29,8 +32,8 @@ contract DCACOIN is IERC20 {
 
     function transfer(address recipient, uint256 amount) external override returns (bool){
         require(balances[msg.sender] >= amount && amount > 0,"Insufficiente amount");
-        balances[msg.sender] -= amount;
-        balances[recipient] +=amount;
+        balances[msg.sender] = balances[msg.sender].sub(amount);
+        balances[recipient] = balances[recipient].add(amount);
         emit Transfer(msg.sender, recipient, amount);
         return true;
     }
@@ -41,8 +44,8 @@ contract DCACOIN is IERC20 {
             && balances[sender] > amount
             && amount > 0 , "Your not allowed to spend from this account"
             );
-        balances[sender] -= amount;
-        balances[recipient] += amount;
+        balances[sender] = balances[sender].sub(amount);
+        balances[recipient] = balances[recipient].add(amount);
         allowed[sender][msg.sender] -= amount;
         emit Transfer(sender, recipient, amount);
         return true;
